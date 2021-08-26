@@ -2,6 +2,7 @@
   "name": "editor-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -16,7 +17,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && rsync -e 'ssh -i ~/.ssh/dbwebb' -av --delete build/ peer19@ssh.student.bth.se:www/editor"
   },
   "eslintConfig": {
     "extends": [
