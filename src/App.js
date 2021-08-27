@@ -12,7 +12,6 @@ function App() {
   };
 
   const state = {};
-  state.test = "test";
 
   return (
     <div className="App">
@@ -26,12 +25,21 @@ function App() {
               'searchreplace visualblocks code fullscreen',
               'insertdatetime media table paste code help wordcount'
             ],
-            toolbar: 'save open undo redo | formatselect | ' +
+            toolbar: 'new save open undo redo | formatselect | ' +
                 'bold italic backcolor | alignleft aligncenter ' +
                 'alignright alignjustify | bullist numlist outdent indent | ' +
                 'removeformat | help',
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
             setup: function (editor) {
+                editor.ui.registry.addButton('new', {
+                    text: 'New',
+                    icon: 'new-document',
+                    onAction: function (_) {
+                        delete state.currentDocumentId;
+                        editorRef.current.setContent("");
+                    }
+                })
+
                 editor.ui.registry.addButton('save', {
                     text: 'Save',
                     icon: 'save',
