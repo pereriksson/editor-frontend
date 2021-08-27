@@ -77,9 +77,10 @@ function App() {
                                         const documentName = document.querySelector("#documentName").value;
 
                                         if (state.currentDocumentId) {
-                                            // Create
+                                            // Update
                                             const documentIndex = state.documents.findIndex(d => d._id === state.currentDocumentId);
                                             state.documents[documentIndex].name = documentName;
+                                            state.documents[documentIndex].contents = editorRef.current.getContent();
                                             console.log(state);
 
                                             await fetch(`http://localhost:1337/v1/documents/${state.currentDocumentId}`, {
