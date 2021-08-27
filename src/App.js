@@ -60,7 +60,7 @@ function App() {
                                             <form name="saveDocumentForm">
                                             <p>Please provide information about your document.</p>
                                             <label for="documentName">Document name:</label>
-                                            <input type="text" id="documentName" placeholder="Document name" value="${currentDocumentName}"/>
+                                            <input type="text" id="documentName" placeholder="Document name" value="${currentDocumentName.replaceAll('"', '&quot;')}"/>
                                             </form>
                                         `
                                             }
