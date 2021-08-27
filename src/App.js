@@ -55,7 +55,6 @@ function App() {
                                         items: [
                                             {
                                                 type: 'htmlpanel',
-                                                // TODO: prefill document name
                                                 html: `
                                             <form name="saveDocumentForm">
                                             <p>Please provide information about your document.</p>
@@ -81,9 +80,8 @@ function App() {
                                             const documentIndex = state.documents.findIndex(d => d._id === state.currentDocumentId);
                                             state.documents[documentIndex].name = documentName;
                                             state.documents[documentIndex].contents = editorRef.current.getContent();
-                                            console.log(state);
 
-                                            await fetch(`http://localhost:1337/v1/documents/${state.currentDocumentId}`, {
+                                            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${state.currentDocumentId}`, {
                                                 method: "PUT",
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -92,7 +90,7 @@ function App() {
                                             });
                                         } else {
                                             // Or create
-                                            const newDocument = await fetch(`http://localhost:1337/v1/documents/`, {
+                                            const newDocument = await fetch(`https://peer19api.azurewebsites.net/v1/documents`, {
                                                 method: "POST",
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -119,7 +117,7 @@ function App() {
                             onAction: async function (_) {
                                 const tinymce = getTinymce();
 
-                                state.documents = await fetch("http://localhost:1337/v1/documents")
+                                state.documents = await fetch("https://peer19api.azurewebsites.net/v1/documents")
                                     .then(res => res.json());
 
                                 let html = "";
