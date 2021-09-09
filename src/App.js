@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
@@ -81,7 +81,7 @@ function App() {
                         'searchreplace visualblocks code fullscreen',
                         'insertdatetime media table paste code help wordcount'
                     ],
-                    toolbar: 'new save open undo redo | formatselect | ' +
+                    toolbar: 'save undo redo | formatselect | ' +
                         'bold italic backcolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | help',
@@ -92,10 +92,6 @@ function App() {
                             icon: 'save',
                             onAction: function (_) {
                                 const tinymce = getTinymce();
-                                let currentDocumentName = "";
-                                if (currentDocumentId) {
-                                    //currentDocumentName = documents.find(d => d._id === currentDocumentId).name;
-                                }
 
                                 tinymce.activeEditor.windowManager.open({
                                     title: "Save",

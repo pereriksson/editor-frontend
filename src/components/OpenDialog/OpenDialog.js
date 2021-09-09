@@ -25,7 +25,7 @@ function OpenDialog (props) {
             return (
                 <li key={d._id}>
                     <input type="radio" defaultChecked={checked} id={id} name="documentId" value={d._id}/>
-                    <label htmlFor={id}>{d.name}</label>
+                    <label htmlFor={id}> {d.name}</label>
                 </li>
             );
         });
@@ -42,6 +42,7 @@ function OpenDialog (props) {
 
     return (
         <Dialog
+            title={props.title}
             dialogs={props.dialogs}
             setDialogs={props.setDialogs}
             name={props.name}
