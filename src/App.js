@@ -4,6 +4,7 @@ import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
 import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
+import Header from "./components/Header/Header";
 
 function App() {
     const editorRef = useRef(null);
@@ -60,6 +61,10 @@ function App() {
 
     return (
         <div className="App">
+            <Header
+                currentDocumentName={currentDocumentName}
+                setCurrentDocumentName={setCurrentDocumentName}
+            />
             <Toolbar
                 currentDocumentId={currentDocumentId}
                 setCurrentDocumentId={setCurrentDocumentId}
