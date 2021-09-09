@@ -23,7 +23,7 @@ function Toolbar(props) {
                 <ToolbarButton
                     icon={saveIcon}
                     label="Save"
-                    onClick={() => true}
+                    onClick={props.saveDocument}
                 />
             </ToolbarButtonGroup>
         </div>

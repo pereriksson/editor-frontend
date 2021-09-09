@@ -7,6 +7,9 @@ function Dialog(props) {
             <div className="dialog-container">
                 <div className="dialog">
                     <h1>{props.title}</h1>
+                    <div className="dialog-contents">
+                        {props.contents}
+                    </div>
                     <div className="dialog-footer">
                         <div className="dialog-footer-start"></div>
                         <div className="dialog-footer-end">
@@ -16,7 +19,10 @@ function Dialog(props) {
                                 props.setDialogs(dialogs);
                             }}>{props.closeLabel}</button>
                             <button className="submit" onClick={() => {
-
+                                const dialogs = Object.assign({}, props.dialogs);
+                                props.onSubmit();
+                                dialogs[props.name].visible = false;
+                                props.setDialogs(dialogs);
                             }}>{props.submitLabel}</button>
                         </div>
                     </div>

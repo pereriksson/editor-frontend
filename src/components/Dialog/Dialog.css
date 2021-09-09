@@ -28,6 +28,11 @@
     padding: 0.5rem 1rem;
 }
 
+.dialog li {
+    text-align: left;
+    list-style-type: none;
+}
+
 .dialog-footer {
     border-top: 1px solid #ccc;
     display: flex;

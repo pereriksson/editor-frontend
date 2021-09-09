@@ -3,11 +3,12 @@ import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
 import Toolbar from "./components/Toolbar/Toolbar";
-import Dialog from "./components/Dialog/Dialog";
+import OpenDialog from "./components/OpenDialog/OpenDialog";
 
 function App() {
     const editorRef = useRef(null);
 
+    const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
     const [dialogs, setDialogs] = useState({
@@ -18,7 +19,6 @@ function App() {
             visible: false
         }
     });
-    const documents = [];
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -26,20 +26,35 @@ function App() {
         editorRef.current.setContent("");
     };
 
-    const openDocument = () => {
+    const openDocument = async () => {
         const currentDialogs = Object.assign({}, dialogs);
         currentDialogs.open.visible = true;
         setDialogs(currentDialogs);
     }
 
+    const saveDocument = () => {
+
+    }
+
+    const selectDocument = () => {
+        const docId = document.querySelector("input[name='documentId']:checked").value;
+        setCurrentDocumentId(docId);
+        const currentDocument = documents.find(d => d._id === docId);
+        setCurrentDocumentName(currentDocument.name);
+        editorRef.current.setContent(currentDocument.contents);
+    };
+
     const openDialog = dialogs.open.visible ? (
-        <Dialog
+        <OpenDialog
             title="Open"
             name="open"
             closeLabel="Close"
             submitLabel="Open"
             dialogs={dialogs}
             setDialogs={setDialogs}
+            onSubmit={selectDocument}
+            documents={documents}
+            setDocuments={setDocuments}
         />
     ) : [];
 
@@ -53,6 +68,7 @@ function App() {
                 editorRef={editorRef}
                 newDocument={newDocument}
                 openDocument={openDocument}
+                saveDocument={saveDocument}
             />
             {openDialog}
             <Editor
@@ -78,7 +94,7 @@ function App() {
                                 const tinymce = getTinymce();
                                 let currentDocumentName = "";
                                 if (currentDocumentId) {
-                                    currentDocumentName = documents.find(d => d._id === currentDocumentId).name;
+                                    //currentDocumentName = documents.find(d => d._id === currentDocumentId).name;
                                 }
 
                                 tinymce.activeEditor.windowManager.open({
@@ -110,8 +126,8 @@ function App() {
 
                                         if (currentDocumentId) {
                                             // Update
-                                            const newDocuments = Object.assign({}, documents);
-                                            const documentIndex = newDocuments.findIndex(d => d._id === currentDocumentId);
+                                            //const newDocuments = Object.assign({}, documents);
+                                            //const documentIndex = newDocuments.findIndex(d => d._id === currentDocumentId);
 
                                             await fetch(`https://peer19api.azurewebsites.net/v1/documents/${currentDocumentId}`, {
                                                 method: "PUT",
@@ -138,7 +154,7 @@ function App() {
                                             })
                                                 .then(res => res.json());
                                             setCurrentDocumentId(newDocument._id);
-                                            const newDocuments = Object.assign({}, documents);
+                                            //const newDocuments = Object.assign({}, documents);
                                         }
 
                                         dialogApi.close();
@@ -146,65 +162,6 @@ function App() {
                                 });
                             }
                         });
-
-                        editor.ui.registry.addButton('open', {
-                            text: 'Open',
-                            icon: 'upload',
-                            onAction: async function (_) {
-                                const tinymce = getTinymce();
-                                const documents = await fetch("https://peer19api.azurewebsites.net/v1/documents")
-                                    .then(res => res.json());
-
-                                let html = "";
-                                let checked = "checked";
-
-                                documents.forEach(d => {
-                                    html += `
-                                <li>
-                                    <input type="radio" ${checked} id="document_${d._id}" name="documentId" value="${d._id}"/>
-                                    <label for="document_${d._id}">${d.name}</label>
-                                </li>
-                            `;
-
-                                    checked = "";
-                                });
-                                html = `
-                            <form name="openDocumentForm">
-                            <p>Select the document to open:</p>
-                            <ul>
-                                ${html}
-                            </ul>
-                            </form>
-                        `;
-
-                                tinymce.activeEditor.windowManager.open({
-                                    title: "Open",
-                                    body: {
-                                        type: "panel",
-                                        items: [
-                                            {
-                                                type: 'htmlpanel',
-                                                html
-                                            }
-                                        ]
-                                    },
-                                    buttons: [
-                                        {
-                                            type: 'submit',
-                                            text: 'Open',
-                                            primary: true
-                                        }
-                                    ],
-                                    onSubmit: function(dialogApi) {
-                                        const docId = document.querySelector("input[name='documentId']:checked").value;
-                                        setCurrentDocumentId(docId);
-                                        const currentDocument = documents.find(d => d._id === docId);
-                                        editorRef.current.setContent(currentDocument.contents);
-                                        dialogApi.close();
-                                    }
-                                });
-                            }
-                        })
                     }
                 }}
             />
