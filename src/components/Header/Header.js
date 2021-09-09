@@ -13,7 +13,7 @@ function Header(props) {
                 <input
                     type="text"
                     value={title}
-                    placeholder="Document title"
+                    placeholder="Untitled document"
                     onChange={e => {
                         props.setCurrentDocumentName(e.target.value);
                     }}
