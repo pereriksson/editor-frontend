@@ -1,0 +1,5 @@
+.toolbar-button-group {
+    display: flex;
+    border-right: 0.1rem solid #ccc;
+    padding: 0 3px 0 0;
+}

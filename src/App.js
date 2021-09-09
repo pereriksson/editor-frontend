@@ -2,6 +2,7 @@ import React, {useRef} from "react";
 import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
+import Toolbar from "./components/Toolbar/Toolbar";
 
 function App() {
     const editorRef = useRef(null);
@@ -12,6 +13,7 @@ function App() {
 
     return (
         <div className="App">
+            <Toolbar/>
             <Editor
                 onInit={(evt, editor) => editorRef.current = editor}
                 init={{
