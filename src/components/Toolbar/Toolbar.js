@@ -15,7 +15,10 @@ function Toolbar(props) {
                     label="New"/>
                 <ToolbarButton
                     icon={openIcon}
-                    label="Open"/>
+                    label="Open"
+                    state={props.state}
+                    setState={props.setState}
+                />
                 <ToolbarButton
                     icon={saveIcon}
                     label="Save"/>

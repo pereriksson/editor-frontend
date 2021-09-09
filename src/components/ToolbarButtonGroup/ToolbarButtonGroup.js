@@ -3,7 +3,7 @@ import './ToolbarButtonGroup.css';
 
 function ToolbarButtonGroup(props) {
     return (
-        <div class="toolbar-button-group">
+        <div className="toolbar-button-group">
             {props.children}
         </div>
     )
