@@ -1,19 +1,45 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
 import Toolbar from "./components/Toolbar/Toolbar";
+import Dialog from "./components/Dialog/Dialog";
 
 function App() {
     const editorRef = useRef(null);
 
-    const state = {
-        documents: []
-    };
+    const [state, setState] = useState({
+        currentDocumentId: null,
+        documents: [],
+        dialogs: {
+            open: {
+                visible: false
+            },
+            save: {
+                visible: false
+            }
+        }
+    });
+
+    const openDialog = state.dialogs.open.visible ? (
+        <Dialog
+            title="Open"
+            name="open"
+            closeLabel="Close"
+            submitLabel="Open"
+            state={state}
+            setState={setState}
+        />
+    ) : [];
 
     return (
         <div className="App">
-            <Toolbar/>
+            <Toolbar
+                state={state}
+                setState={setState}
+                editorRef={editorRef}
+            />
+            {openDialog}
             <Editor
                 onInit={(evt, editor) => editorRef.current = editor}
                 init={{
@@ -30,15 +56,6 @@ function App() {
                         'removeformat | help',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     setup: function (editor) {
-                        editor.ui.registry.addButton('new', {
-                            text: 'New',
-                            icon: 'new-document',
-                            onAction: function (_) {
-                                delete state.currentDocumentId;
-                                editorRef.current.setContent("");
-                            }
-                        })
-
                         editor.ui.registry.addButton('save', {
                             text: 'Save',
                             icon: 'save',

@@ -12,16 +12,32 @@ function Toolbar(props) {
             <ToolbarButtonGroup>
                 <ToolbarButton
                     icon={newIcon}
-                    label="New"/>
+                    label="New"
+                    state={props.state}
+                    setState={props.setState}
+                    onClick={() => {
+                        const state = Object.assign({}, props.state);
+                        state.currentDocumentId = null;
+                        props.editorRef.current.setContent("");
+                    }}
+                />
                 <ToolbarButton
                     icon={openIcon}
                     label="Open"
                     state={props.state}
                     setState={props.setState}
+                    onClick={() => {
+                        const state = Object.assign({}, props.state);
+                        state.dialogs.open.visible = true;
+                        props.setState(state);
+                    }}
                 />
                 <ToolbarButton
                     icon={saveIcon}
-                    label="Save"/>
+                    label="Save"
+                    state={props.state}
+                    setState={props.setState}
+                />
             </ToolbarButtonGroup>
         </div>
     );
