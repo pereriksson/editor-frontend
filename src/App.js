@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
 import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
@@ -8,36 +8,51 @@ import Dialog from "./components/Dialog/Dialog";
 function App() {
     const editorRef = useRef(null);
 
-    const [state, setState] = useState({
-        currentDocumentId: null,
-        documents: [],
-        dialogs: {
-            open: {
-                visible: false
-            },
-            save: {
-                visible: false
-            }
+    const [currentDocumentId, setCurrentDocumentId] = useState(null);
+    const [currentDocumentName, setCurrentDocumentName] = useState(null);
+    const [dialogs, setDialogs] = useState({
+        open: {
+            visible: false
+        },
+        save: {
+            visible: false
         }
     });
+    const documents = [];
 
-    const openDialog = state.dialogs.open.visible ? (
+    const newDocument = () => {
+        setCurrentDocumentId(null);
+        setCurrentDocumentName(null);
+        editorRef.current.setContent("");
+    };
+
+    const openDocument = () => {
+        const currentDialogs = Object.assign({}, dialogs);
+        currentDialogs.open.visible = true;
+        setDialogs(currentDialogs);
+    }
+
+    const openDialog = dialogs.open.visible ? (
         <Dialog
             title="Open"
             name="open"
             closeLabel="Close"
             submitLabel="Open"
-            state={state}
-            setState={setState}
+            dialogs={dialogs}
+            setDialogs={setDialogs}
         />
     ) : [];
 
     return (
         <div className="App">
             <Toolbar
-                state={state}
-                setState={setState}
+                currentDocumentId={currentDocumentId}
+                setCurrentDocumentId={setCurrentDocumentId}
+                dialogs={dialogs}
+                setDialogs={setDialogs}
                 editorRef={editorRef}
+                newDocument={newDocument}
+                openDocument={openDocument}
             />
             {openDialog}
             <Editor
@@ -61,10 +76,9 @@ function App() {
                             icon: 'save',
                             onAction: function (_) {
                                 const tinymce = getTinymce();
-
                                 let currentDocumentName = "";
-                                if (state.currentDocumentId) {
-                                    currentDocumentName = state.documents.find(d => d._id === state.currentDocumentId).name;
+                                if (currentDocumentId) {
+                                    currentDocumentName = documents.find(d => d._id === currentDocumentId).name;
                                 }
 
                                 tinymce.activeEditor.windowManager.open({
@@ -75,12 +89,12 @@ function App() {
                                             {
                                                 type: 'htmlpanel',
                                                 html: `
-                                            <form name="saveDocumentForm">
-                                            <p>Please provide information about your document.</p>
-                                            <label for="documentName">Document name:</label>
-                                            <input type="text" id="documentName" placeholder="Document name" value="${currentDocumentName.replaceAll('"', '&quot;')}"/>
-                                            </form>
-                                        `
+                                                    <form name="saveDocumentForm">
+                                                    <p>Please provide information about your document.</p>
+                                                    <label for="documentName">Document name:</label>
+                                                    <input type="text" id="documentName" placeholder="Document name" value="${currentDocumentName.replaceAll('"', '&quot;')}"/>
+                                                    </form>
+                                                `
                                             }
                                         ]
                                     },
@@ -94,18 +108,21 @@ function App() {
                                     onSubmit: async function(dialogApi) {
                                         const documentName = document.querySelector("#documentName").value;
 
-                                        if (state.currentDocumentId) {
+                                        if (currentDocumentId) {
                                             // Update
-                                            const documentIndex = state.documents.findIndex(d => d._id === state.currentDocumentId);
-                                            state.documents[documentIndex].name = documentName;
-                                            state.documents[documentIndex].contents = editorRef.current.getContent();
+                                            const newDocuments = Object.assign({}, documents);
+                                            const documentIndex = newDocuments.findIndex(d => d._id === currentDocumentId);
 
-                                            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${state.currentDocumentId}`, {
+                                            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${currentDocumentId}`, {
                                                 method: "PUT",
                                                 headers: {
                                                     'Content-Type': 'application/json'
                                                 },
-                                                body: JSON.stringify(state.documents[documentIndex])
+                                                body: JSON.stringify({
+                                                    _id: currentDocumentId,
+                                                    name: documentName,
+                                                    contents: editorRef.current.getContent()
+                                                })
                                             });
                                         } else {
                                             // Or create
@@ -120,8 +137,8 @@ function App() {
                                                 })
                                             })
                                                 .then(res => res.json());
-                                            state.currentDocumentId = newDocument._id;
-                                            state.documents.push(newDocument);
+                                            setCurrentDocumentId(newDocument._id);
+                                            const newDocuments = Object.assign({}, documents);
                                         }
 
                                         dialogApi.close();
@@ -135,14 +152,13 @@ function App() {
                             icon: 'upload',
                             onAction: async function (_) {
                                 const tinymce = getTinymce();
-
-                                state.documents = await fetch("https://peer19api.azurewebsites.net/v1/documents")
+                                const documents = await fetch("https://peer19api.azurewebsites.net/v1/documents")
                                     .then(res => res.json());
 
                                 let html = "";
                                 let checked = "checked";
 
-                                state.documents.forEach(d => {
+                                documents.forEach(d => {
                                     html += `
                                 <li>
                                     <input type="radio" ${checked} id="document_${d._id}" name="documentId" value="${d._id}"/>
@@ -180,8 +196,9 @@ function App() {
                                         }
                                     ],
                                     onSubmit: function(dialogApi) {
-                                        state.currentDocumentId = document.querySelector("input[name='documentId']:checked").value;
-                                        const currentDocument = state.documents.find(d => d._id === state.currentDocumentId);
+                                        const docId = document.querySelector("input[name='documentId']:checked").value;
+                                        setCurrentDocumentId(docId);
+                                        const currentDocument = documents.find(d => d._id === docId);
                                         editorRef.current.setContent(currentDocument.contents);
                                         dialogApi.close();
                                     }

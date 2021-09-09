@@ -5,7 +5,9 @@ function ToolbarButton(props) {
     return (
         <div className="toolbar-button">
             <button
-                onClick={props.onClick}
+                onClick={() => {
+                    props.onClick();
+                }}
             >
                 <span className="icon"><img alt={props.label} src={props.icon}/></span>
                 <span className="label">{props.label}</span>

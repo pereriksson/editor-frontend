@@ -11,9 +11,9 @@ function Dialog(props) {
                         <div className="dialog-footer-start"></div>
                         <div className="dialog-footer-end">
                             <button onClick={() => {
-                                const state = Object.assign({}, props.state);
-                                state.dialogs[props.name].visible = false;
-                                props.setState(state);
+                                const dialogs = Object.assign({}, props.dialogs);
+                                dialogs[props.name].visible = false;
+                                props.setDialogs(dialogs);
                             }}>{props.closeLabel}</button>
                             <button className="submit" onClick={() => {
 

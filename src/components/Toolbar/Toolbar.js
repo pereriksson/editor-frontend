@@ -13,30 +13,17 @@ function Toolbar(props) {
                 <ToolbarButton
                     icon={newIcon}
                     label="New"
-                    state={props.state}
-                    setState={props.setState}
-                    onClick={() => {
-                        const state = Object.assign({}, props.state);
-                        state.currentDocumentId = null;
-                        props.editorRef.current.setContent("");
-                    }}
+                    onClick={props.newDocument}
                 />
                 <ToolbarButton
                     icon={openIcon}
                     label="Open"
-                    state={props.state}
-                    setState={props.setState}
-                    onClick={() => {
-                        const state = Object.assign({}, props.state);
-                        state.dialogs.open.visible = true;
-                        props.setState(state);
-                    }}
+                    onClick={props.openDocument}
                 />
                 <ToolbarButton
                     icon={saveIcon}
                     label="Save"
-                    state={props.state}
-                    setState={props.setState}
+                    onClick={() => true}
                 />
             </ToolbarButtonGroup>
         </div>
