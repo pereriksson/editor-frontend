@@ -40,18 +40,20 @@ function OpenDialog (props) {
         );
     }
 
-    return (
+    const openDialog = props.dialogs.open.visible ? (
         <Dialog
-            title={props.title}
+            title="Open"
+            name="open"
+            closeLabel="Close"
+            submitLabel="Open"
             dialogs={props.dialogs}
             setDialogs={props.setDialogs}
-            name={props.name}
             contents={contents}
-            closeLabel={props.closeLabel}
-            submitLabel={props.submitLabel}
             onSubmit={props.onSubmit}
         />
-    )
+    ) : [];
+
+    return openDialog;
 }
 
 export default OpenDialog;

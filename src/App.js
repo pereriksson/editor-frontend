@@ -5,6 +5,8 @@ import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
 import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
+import SaveDialog from "./components/SaveDialog/SaveDialog";
+import ContentEditor from "./components/ContentEditor/ContentEditor";
 
 function App() {
     const editorRef = useRef(null);
@@ -27,17 +29,13 @@ function App() {
         editorRef.current.setContent("");
     };
 
-    const openDocument = async () => {
+    const showOpenDialog = async () => {
         const currentDialogs = Object.assign({}, dialogs);
         currentDialogs.open.visible = true;
         setDialogs(currentDialogs);
     }
 
-    const saveDocument = () => {
-
-    }
-
-    const selectDocument = () => {
+    const openDocument = () => {
         const docId = document.querySelector("input[name='documentId']:checked").value;
         setCurrentDocumentId(docId);
         const currentDocument = documents.find(d => d._id === docId);
@@ -45,19 +43,35 @@ function App() {
         editorRef.current.setContent(currentDocument.contents);
     };
 
-    const openDialog = dialogs.open.visible ? (
-        <OpenDialog
-            title="Open"
-            name="open"
-            closeLabel="Close"
-            submitLabel="Open"
-            dialogs={dialogs}
-            setDialogs={setDialogs}
-            onSubmit={selectDocument}
-            documents={documents}
-            setDocuments={setDocuments}
-        />
-    ) : [];
+    const saveDocument = async () => {
+        if (currentDocumentId) {
+            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${currentDocumentId}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    _id: currentDocumentId,
+                    name: currentDocumentName,
+                    contents: editorRef.current.getContent()
+                })
+            });
+        } else {
+            // Or create
+            const newDocument = await fetch(`https://peer19api.azurewebsites.net/v1/documents`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: currentDocumentName,
+                    contents: editorRef.current.getContent()
+                })
+            })
+                .then(res => res.json());
+            setCurrentDocumentId(newDocument._id);
+        }
+    }
 
     return (
         <div className="App">
@@ -72,99 +86,18 @@ function App() {
                 setDialogs={setDialogs}
                 editorRef={editorRef}
                 newDocument={newDocument}
-                openDocument={openDocument}
+                openDocument={showOpenDialog}
                 saveDocument={saveDocument}
             />
-            {openDialog}
-            <Editor
-                onInit={(evt, editor) => editorRef.current = editor}
-                init={{
-                    height: 500,
-                    menubar: false,
-                    plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount'
-                    ],
-                    toolbar: 'save undo redo | formatselect | ' +
-                        'bold italic backcolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                    setup: function (editor) {
-                        editor.ui.registry.addButton('save', {
-                            text: 'Save',
-                            icon: 'save',
-                            onAction: function (_) {
-                                const tinymce = getTinymce();
-
-                                tinymce.activeEditor.windowManager.open({
-                                    title: "Save",
-                                    body: {
-                                        type: "panel",
-                                        items: [
-                                            {
-                                                type: 'htmlpanel',
-                                                html: `
-                                                    <form name="saveDocumentForm">
-                                                    <p>Please provide information about your document.</p>
-                                                    <label for="documentName">Document name:</label>
-                                                    <input type="text" id="documentName" placeholder="Document name" value="${currentDocumentName.replaceAll('"', '&quot;')}"/>
-                                                    </form>
-                                                `
-                                            }
-                                        ]
-                                    },
-                                    buttons: [
-                                        {
-                                            type: 'submit',
-                                            text: 'Save',
-                                            primary: true
-                                        }
-                                    ],
-                                    onSubmit: async function(dialogApi) {
-                                        const documentName = document.querySelector("#documentName").value;
-
-                                        if (currentDocumentId) {
-                                            // Update
-                                            //const newDocuments = Object.assign({}, documents);
-                                            //const documentIndex = newDocuments.findIndex(d => d._id === currentDocumentId);
-
-                                            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${currentDocumentId}`, {
-                                                method: "PUT",
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                    _id: currentDocumentId,
-                                                    name: documentName,
-                                                    contents: editorRef.current.getContent()
-                                                })
-                                            });
-                                        } else {
-                                            // Or create
-                                            const newDocument = await fetch(`https://peer19api.azurewebsites.net/v1/documents`, {
-                                                method: "POST",
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                    name: documentName,
-                                                    contents: editorRef.current.getContent()
-                                                })
-                                            })
-                                                .then(res => res.json());
-                                            setCurrentDocumentId(newDocument._id);
-                                            //const newDocuments = Object.assign({}, documents);
-                                        }
-
-                                        dialogApi.close();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }}
+            <OpenDialog
+                dialogs={dialogs}
+                setDialogs={setDialogs}
+                onSubmit={openDocument}
+                documents={documents}
+                setDocuments={setDocuments}
+            />
+            <ContentEditor
+                editorRef={editorRef}
             />
         </div>
     );
