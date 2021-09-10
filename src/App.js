@@ -1,11 +1,8 @@
 import React, {useRef, useState} from "react";
-import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
-import {getTinymce} from "@tinymce/tinymce-react/lib/es2015/main/ts/TinyMCE";
 import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
-import SaveDialog from "./components/SaveDialog/SaveDialog";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
 
 function App() {
