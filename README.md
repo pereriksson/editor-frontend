@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Editor Frontend
+
+[![Build Status](https://app.travis-ci.com/pereriksson/editor-frontend.svg?branch=master)](https://app.travis-ci.com/pereriksson/editor-frontend)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
