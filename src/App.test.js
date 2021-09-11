@@ -1,20 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import userEvent from "@testing-library/user-event";
 
-test('renders the save button', () => {
+test('renders the header', () => {
   render(<App />);
-  const btnLabel = screen.getByText(/Save/i);
-  expect(btnLabel).toBeInTheDocument();
+  const saveLabel = screen.getByText(/save/i);
+  expect(saveLabel).toBeInTheDocument();
+  const newLabel = screen.getByText(/new/i);
+  expect(newLabel).toBeInTheDocument();
+  const openLabel = screen.getByText(/open/i);
+  expect(openLabel).toBeInTheDocument();
 });
 
-test('renders the new button', () => {
+test('displays the open dialog', () => {
   render(<App />);
-  const btnLabel = screen.getByText(/New/i);
-  expect(btnLabel).toBeInTheDocument();
+  const btn = screen.getByText(/open/i);
+  btn.click();
+  const text = screen.getByText(/select the document to open/i);
+  expect(text).toBeInTheDocument();
 });
 
-test('renders the open button', () => {
+test('resets the document', () => {
   render(<App />);
-  const btnLabel = screen.getByText(/Open/i);
-  expect(btnLabel).toBeInTheDocument();
+  const documentName = screen.getByPlaceholderText(/untitled document/i);
+  userEvent.type(documentName, 'A document name');
+  const newBtn = screen.getByText(/new/i);
+  userEvent.click(newBtn);
+  expect(documentName.value).toBe('');
 });

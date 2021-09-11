@@ -14,11 +14,12 @@ function OpenDialog (props) {
     }, []);
 
     let contents;
+    let listItems;
 
     if (props.documents) {
         let checked;
 
-        const listItems = props.documents.map((d, index) => {
+        listItems = props.documents.map((d, index) => {
             checked = (index === 0) ? "defaultChecked" : "";
             let id = "document_"+d._id;
 
@@ -29,16 +30,16 @@ function OpenDialog (props) {
                 </li>
             );
         });
-
-        contents = (
-            <form name="openDocumentForm">
-                <p>Select the document to open:</p>
-                <ul>
-                    {listItems}
-                </ul>
-            </form>
-        );
     }
+
+    contents = (
+        <form name="openDocumentForm">
+            <p>Select the document to open:</p>
+            <ul>
+                {listItems}
+            </ul>
+        </form>
+    );
 
     const openDialog = props.dialogs.open.visible ? (
         <Dialog

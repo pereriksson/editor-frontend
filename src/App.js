@@ -23,7 +23,10 @@ function App() {
     const newDocument = () => {
         setCurrentDocumentId(null);
         setCurrentDocumentName(null);
-        editorRef.current.setContent("");
+
+        if (editorRef.current) {
+            editorRef.current.setContent("");
+        }
     };
 
     const showOpenDialog = async () => {
