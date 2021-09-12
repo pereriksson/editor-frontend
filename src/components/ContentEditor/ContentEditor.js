@@ -4,7 +4,12 @@ import {Editor} from "@tinymce/tinymce-react";
 function ContentEditor(props) {
     return (
         <Editor
-            onInit={(evt, editor) => props.editorRef.current = editor}
+            onInit={(evt, editor) => {
+                props.editorRef.current = editor;
+            }}
+            onChange={(event, editor) => {
+                props.sendUpdateToBackend();
+            }}
             init={{
                 height: 500,
                 menubar: false,
@@ -17,10 +22,7 @@ function ContentEditor(props) {
                     'bold italic backcolor | alignleft aligncenter ' +
                     'alignright alignjustify | bullist numlist outdent indent | ' +
                     'removeformat | help',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                setup: function (editor) {
-
-                }
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
             }}
         />
     );

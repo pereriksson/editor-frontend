@@ -1,12 +1,15 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './App.css';
 import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
+import socketIOClient from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
     const editorRef = useRef(null);
+    const [appInstanceId, setAppInstanceId] = useState(uuidv4());
 
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
@@ -19,6 +22,11 @@ function App() {
             visible: false
         }
     });
+    const [socket, setSocket] = useState();
+
+    useEffect(() => {
+        setSocket(socketIOClient(process.env.REACT_APP_API_HOSTNAME));
+    }, []);
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -41,11 +49,21 @@ function App() {
         const currentDocument = documents.find(d => d._id === docId);
         setCurrentDocumentName(currentDocument.name);
         editorRef.current.setContent(currentDocument.contents);
+
+        socket.emit("open", docId);
+
+        socket.on("update", data => {
+            // Only update if it was somebody else, and content doesn't differ
+            // (to avoid excessive updates and bad UX)
+            if (data.by !== appInstanceId && editorRef.current.getContent() !== data.content) {
+                editorRef.current.setContent(data.content);
+            }
+        });
     };
 
     const saveDocument = async () => {
         if (currentDocumentId) {
-            await fetch(`https://peer19api.azurewebsites.net/v1/documents/${currentDocumentId}`, {
+            await fetch(`${process.env.REACT_APP_API_HOSTNAME}/v1/documents/${currentDocumentId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -58,7 +76,7 @@ function App() {
             });
         } else {
             // Or create
-            const newDocument = await fetch(`https://peer19api.azurewebsites.net/v1/documents`, {
+            const newDocument = await fetch(`${process.env.REACT_APP_API_HOSTNAME}/v1/documents`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -72,6 +90,17 @@ function App() {
             setCurrentDocumentId(newDocument._id);
         }
     }
+
+    const sendUpdateToBackend = () => {
+        if (currentDocumentId) {
+            socket.emit("update", {
+                by: appInstanceId,
+                _id: currentDocumentId,
+                name: currentDocumentName,
+                content: editorRef.current.getContent()
+            });
+        }
+    };
 
     return (
         <div className="App">
@@ -98,6 +127,10 @@ function App() {
             />
             <ContentEditor
                 editorRef={editorRef}
+                socket={socket}
+                currentDocumentId={currentDocumentId}
+                currentDocumentName={currentDocumentName}
+                sendUpdateToBackend={sendUpdateToBackend}
             />
         </div>
     );
