@@ -1,18 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Dialog from "../Dialog/Dialog";
-import {REACT_APP_API_HOSTNAME} from "../../constants";
 
 function OpenDialog (props) {
     useEffect(() => {
-        async function fetchData() {
-            const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`)
-                .then(res => res.json());
-
-            props.setDocuments(res);
-        }
-
-        fetchData();
+        props.fetchDocuments();
     }, []);
+
+    if (!props.dialogs.open.visible) return null;
 
     let contents;
     let listItems;
@@ -42,7 +36,7 @@ function OpenDialog (props) {
         </form>
     );
 
-    const openDialog = props.dialogs.open.visible ? (
+    return (
         <Dialog
             title="Open"
             name="open"
@@ -53,9 +47,7 @@ function OpenDialog (props) {
             contents={contents}
             onSubmit={props.onSubmit}
         />
-    ) : [];
-
-    return openDialog;
+    );
 }
 
 export default OpenDialog;

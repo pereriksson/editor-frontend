@@ -8,9 +8,11 @@ import socketIOClient from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
 import {REACT_APP_API_HOSTNAME} from "./constants";
 
+const appInstanceId = uuidv4();
+const socket = socketIOClient(REACT_APP_API_HOSTNAME);
+
 function App() {
     const editorRef = useRef(null);
-    const [appInstanceId, setAppInstanceId] = useState(uuidv4());
 
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
@@ -23,11 +25,6 @@ function App() {
             visible: false
         }
     });
-    const [socket, setSocket] = useState();
-
-    useEffect(() => {
-        setSocket(socketIOClient(REACT_APP_API_HOSTNAME));
-    }, []);
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -103,6 +100,13 @@ function App() {
         }
     };
 
+    const fetchDocuments = async () => {
+        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`)
+            .then(res => res.json());
+
+        setDocuments(res);
+    }
+
     return (
         <div className="App">
             <Header
@@ -124,7 +128,7 @@ function App() {
                 setDialogs={setDialogs}
                 onSubmit={openDocument}
                 documents={documents}
-                setDocuments={setDocuments}
+                fetchDocuments={fetchDocuments}
             />
             <ContentEditor
                 editorRef={editorRef}
