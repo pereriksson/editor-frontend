@@ -5,10 +5,8 @@ import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
 import socketIOClient from "socket.io-client";
-import { v4 as uuidv4 } from 'uuid';
-import {REACT_APP_API_HOSTNAME} from "./constants";
+import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
 
-const appInstanceId = uuidv4();
 const socket = socketIOClient(REACT_APP_API_HOSTNAME);
 
 function App() {
@@ -53,7 +51,7 @@ function App() {
         socket.on("update", data => {
             // Only update if it was somebody else, and content doesn't differ
             // (to avoid excessive updates and bad UX)
-            if (data.by !== appInstanceId && editorRef.current.getContent() !== data.content) {
+            if (data.by !== APP_INSTANCE_ID && editorRef.current.getContent() !== data.content) {
                 editorRef.current.setContent(data.content);
             }
         });
@@ -92,7 +90,7 @@ function App() {
     const sendUpdateToBackend = () => {
         if (currentDocumentId) {
             socket.emit("update", {
-                by: appInstanceId,
+                by: APP_INSTANCE_ID,
                 _id: currentDocumentId,
                 name: currentDocumentName,
                 content: editorRef.current.getContent()
@@ -106,6 +104,18 @@ function App() {
 
         setDocuments(res);
     }
+
+    const openDialog = (dialogs.open.visible) ?
+        (
+            <OpenDialog
+                dialogs={dialogs}
+                setDialogs={setDialogs}
+                onSubmit={openDocument}
+                documents={documents}
+                fetchDocuments={fetchDocuments}
+                setDocuments={setDocuments}
+            />
+        ) : null;
 
     return (
         <div className="App">
@@ -123,13 +133,7 @@ function App() {
                 openDocument={showOpenDialog}
                 saveDocument={saveDocument}
             />
-            <OpenDialog
-                dialogs={dialogs}
-                setDialogs={setDialogs}
-                onSubmit={openDocument}
-                documents={documents}
-                fetchDocuments={fetchDocuments}
-            />
+            {openDialog}
             <ContentEditor
                 editorRef={editorRef}
                 socket={socket}

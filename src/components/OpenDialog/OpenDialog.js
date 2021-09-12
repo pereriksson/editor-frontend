@@ -3,10 +3,9 @@ import Dialog from "../Dialog/Dialog";
 
 function OpenDialog (props) {
     useEffect(() => {
+        props.setDocuments(null);
         props.fetchDocuments();
     }, []);
-
-    if (!props.dialogs.open.visible) return null;
 
     let contents;
     let listItems;
