@@ -4,10 +4,8 @@ import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
-import socketIOClient from "socket.io-client";
 import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
-
-const socket = socketIOClient(REACT_APP_API_HOSTNAME);
+import socket from "./Socket";
 
 function App() {
     const editorRef = useRef(null);
@@ -46,11 +44,11 @@ function App() {
         setCurrentDocumentName(currentDocument.name);
         editorRef.current.setContent(currentDocument.contents);
 
-        socket.emit("open", docId);
+        socket.openDocument(docId);
 
-        socket.on("update", data => {
+        socket.onUpdate(data => {
             // Only update if it was somebody else, and content doesn't differ
-            // (to avoid excessive updates and bad UX)
+            // to avoid excessive updates and bad UX
             if (data.by !== APP_INSTANCE_ID && editorRef.current.getContent() !== data.content) {
                 editorRef.current.setContent(data.content);
             }
@@ -89,12 +87,7 @@ function App() {
 
     const sendUpdateToBackend = () => {
         if (currentDocumentId) {
-            socket.emit("update", {
-                by: APP_INSTANCE_ID,
-                _id: currentDocumentId,
-                name: currentDocumentName,
-                content: editorRef.current.getContent()
-            });
+            socket.update(currentDocumentId, currentDocumentName, editorRef.current.getContent());
         }
     };
 
