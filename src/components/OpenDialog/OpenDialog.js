@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import Dialog from "../Dialog/Dialog";
+import {REACT_APP_API_HOSTNAME} from "../../constants";
 
 function OpenDialog (props) {
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch("https://peer19api.azurewebsites.net/v1/documents")
+            const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`)
                 .then(res => res.json());
 
             props.setDocuments(res);

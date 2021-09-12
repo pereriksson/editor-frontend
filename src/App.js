@@ -6,6 +6,7 @@ import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
 import socketIOClient from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
+import {REACT_APP_API_HOSTNAME} from "./constants";
 
 function App() {
     const editorRef = useRef(null);
@@ -25,7 +26,7 @@ function App() {
     const [socket, setSocket] = useState();
 
     useEffect(() => {
-        setSocket(socketIOClient(process.env.REACT_APP_API_HOSTNAME));
+        setSocket(socketIOClient(REACT_APP_API_HOSTNAME));
     }, []);
 
     const newDocument = () => {
@@ -63,7 +64,7 @@ function App() {
 
     const saveDocument = async () => {
         if (currentDocumentId) {
-            await fetch(`${process.env.REACT_APP_API_HOSTNAME}/v1/documents/${currentDocumentId}`, {
+            await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents/${currentDocumentId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -76,7 +77,7 @@ function App() {
             });
         } else {
             // Or create
-            const newDocument = await fetch(`${process.env.REACT_APP_API_HOSTNAME}/v1/documents`, {
+            const newDocument = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
