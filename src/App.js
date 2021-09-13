@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import './App.css';
 import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
@@ -6,10 +6,12 @@ import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
 import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
 import socket from "./Socket";
+import LoginDialog from "./components/LoginDialog/LoginDialog";
 
 function App() {
     const editorRef = useRef(null);
 
+    const [loggedIn, setLoggedIn] = useState(false);
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
@@ -17,8 +19,8 @@ function App() {
         open: {
             visible: false
         },
-        save: {
-            visible: false
+        login: {
+            visible: true
         }
     });
 
@@ -110,30 +112,39 @@ function App() {
             />
         ) : null;
 
+    const app = loggedIn ?
+        (
+            <div>
+                <Header
+                    currentDocumentName={currentDocumentName}
+                    setCurrentDocumentName={setCurrentDocumentName}
+                />
+                <Toolbar
+                    currentDocumentId={currentDocumentId}
+                    setCurrentDocumentId={setCurrentDocumentId}
+                    dialogs={dialogs}
+                    setDialogs={setDialogs}
+                    editorRef={editorRef}
+                    newDocument={newDocument}
+                    openDocument={showOpenDialog}
+                    saveDocument={saveDocument}
+                />
+                {openDialog}
+                <ContentEditor
+                    editorRef={editorRef}
+                    socket={socket}
+                    currentDocumentId={currentDocumentId}
+                    currentDocumentName={currentDocumentName}
+                    sendUpdateToBackend={sendUpdateToBackend}
+                />
+            </div>
+        ) : (
+            <LoginDialog/>
+        );
+
     return (
         <div className="App">
-            <Header
-                currentDocumentName={currentDocumentName}
-                setCurrentDocumentName={setCurrentDocumentName}
-            />
-            <Toolbar
-                currentDocumentId={currentDocumentId}
-                setCurrentDocumentId={setCurrentDocumentId}
-                dialogs={dialogs}
-                setDialogs={setDialogs}
-                editorRef={editorRef}
-                newDocument={newDocument}
-                openDocument={showOpenDialog}
-                saveDocument={saveDocument}
-            />
-            {openDialog}
-            <ContentEditor
-                editorRef={editorRef}
-                socket={socket}
-                currentDocumentId={currentDocumentId}
-                currentDocumentName={currentDocumentName}
-                sendUpdateToBackend={sendUpdateToBackend}
-            />
+            {app}
         </div>
     );
 }

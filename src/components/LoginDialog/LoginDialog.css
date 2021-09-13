@@ -1,0 +1,22 @@
+.dialog.login ul {
+    padding-left: 2.5rem;
+}
+
+.dialog.login ul li {
+    list-style-type: disc;
+}
+
+.loginFormRow {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.loginFormRow label {
+    width: 6rem;
+    padding: .3rem;
+    font-size: .875rem;
+}
+
+.loginFormRow input {
+    width: 15rem;
+}
