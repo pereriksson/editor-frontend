@@ -27,12 +27,12 @@ function OpenDialog (props) {
     }
 
     contents = (
-        <form name="openDocumentForm">
+        <div>
             <p>Select the document to open:</p>
             <ul>
                 {listItems}
             </ul>
-        </form>
+        </div>
     );
 
     return (

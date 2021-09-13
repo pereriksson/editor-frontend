@@ -7,11 +7,13 @@ import ContentEditor from "./components/ContentEditor/ContentEditor";
 import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
 import socket from "./Socket";
 import LoginDialog from "./components/LoginDialog/LoginDialog";
+import documentApi from "./apis/DocumentApi";
 
 function App() {
     const editorRef = useRef(null);
 
     const [loggedIn, setLoggedIn] = useState(false);
+    const authToken = useRef();
     const [loginError, setLoginError] = useState();
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
@@ -60,31 +62,10 @@ function App() {
 
     const saveDocument = async () => {
         if (currentDocumentId) {
-            await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents/${currentDocumentId}`, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    _id: currentDocumentId,
-                    name: currentDocumentName,
-                    contents: editorRef.current.getContent()
-                })
-            });
+            await documentApi.updateDocument(currentDocumentId, currentDocumentName, editorRef.current.getContent());
         } else {
-            // Or create
-            const newDocument = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: currentDocumentName,
-                    contents: editorRef.current.getContent()
-                })
-            })
-                .then(res => res.json());
-            setCurrentDocumentId(newDocument._id);
+            await documentApi.createDocument(currentDocumentName, editorRef.current.getContent())
+                .then(doc => setCurrentDocumentId(doc._id));
         }
     }
 
@@ -95,30 +76,20 @@ function App() {
     };
 
     const fetchDocuments = async () => {
-        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`)
-            .then(res => res.json());
-
-        setDocuments(res);
+        await documentApi.fetchDocuments()
+            .then(d => setDocuments(d));
     }
 
     const loginUser = async () => {
-        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: document.querySelector("#username").value,
-                password: document.querySelector("#password").value
-            })
-        })
-            .then(res => res.json());
-
-        if (res.success) {
-            setLoggedIn(true);
-        } else {
-            setLoginError("Invalid username or password.");
-        }
+        documentApi.loginUser(document.querySelector("#username").value, document.querySelector("#password").value)
+            .then(res => {
+                if (res.success) {
+                    setLoggedIn(true);
+                } else {
+                    setLoginError("Invalid username or password.");
+                    document.querySelector("#username").focus();
+                }
+            });
     }
 
     const openDialog = (dialogs.open.visible) ?
