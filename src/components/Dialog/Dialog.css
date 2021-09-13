@@ -51,7 +51,8 @@
     justify-content: space-between;
 }
 
-.dialog-footer button {
+.dialog-footer button,
+.dialog-footer input[type="submit"] {
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -62,7 +63,8 @@
     margin-left: 5px;
 }
 
-.dialog-footer button.submit {
+.dialog-footer button.submit,
+.dialog-footer input[type="submit"].submit {
     background: #207ab7;
     border: 1px solid #207ab7;
     border-radius: 3px;
