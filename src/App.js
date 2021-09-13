@@ -12,6 +12,7 @@ function App() {
     const editorRef = useRef(null);
 
     const [loggedIn, setLoggedIn] = useState(false);
+    const [loginError, setLoginError] = useState();
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
@@ -100,6 +101,26 @@ function App() {
         setDocuments(res);
     }
 
+    const loginUser = async () => {
+        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: document.querySelector("#username").value,
+                password: document.querySelector("#password").value
+            })
+        })
+            .then(res => res.json());
+
+        if (res.success) {
+            setLoggedIn(true);
+        } else {
+            setLoginError("Invalid username or password.");
+        }
+    }
+
     const openDialog = (dialogs.open.visible) ?
         (
             <OpenDialog
@@ -139,7 +160,12 @@ function App() {
                 />
             </div>
         ) : (
-            <LoginDialog/>
+            <LoginDialog
+                onSubmit={loginUser}
+                dialogs={dialogs}
+                setDialogs={setDialogs}
+                loginError={loginError}
+            />
         );
 
     return (

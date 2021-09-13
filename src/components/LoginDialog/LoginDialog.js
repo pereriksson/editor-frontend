@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import Dialog from "../Dialog/Dialog";
 import "./LoginDialog.css";
 
@@ -7,21 +7,26 @@ function LoginDialog (props) {
         document.querySelector("#username").focus();
     }, []);
 
+    const loginError = props.loginError ? (
+        <p className="loginError">{props.loginError}</p>
+    ) : null;
+
     const contents = (
-        <div class="loginForm">
+        <div className="loginForm">
+            {loginError}
             <p>
-                Logga in med någon av:<br/>
-                <ul>
-                    <li>admin/admin</li>
-                    <li>per/password</li>
-                    <li>emil/password</li>
-                </ul>
+                Log in with one of the following:
             </p>
-            <div class="loginFormRow">
+            <ul>
+                <li>admin/admin</li>
+                <li>per/password</li>
+                <li>emil/password</li>
+            </ul>
+            <div className="loginFormRow">
                 <label htmlFor="username">Username:</label>
                 <input type="text" id="username"/>
             </div>
-            <div class="loginFormRow">
+            <div className="loginFormRow">
                 <label htmlFor="password">Password:</label>
                 <input type="password" id="password"/>
             </div>

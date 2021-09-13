@@ -1,9 +1,14 @@
 .dialog.login ul {
     padding-left: 2.5rem;
+    margin-top: 0;
 }
 
 .dialog.login ul li {
     list-style-type: disc;
+}
+
+.dialog.login p {
+    font-size: .9rem;
 }
 
 .loginFormRow {
@@ -19,4 +24,8 @@
 
 .loginFormRow input {
     width: 15rem;
+}
+
+.loginError {
+    color: red;
 }
