@@ -32,12 +32,19 @@ class DocumentApi {
     }
 
     async fetchDocuments() {
-        return await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`, {
+        return await fetch(`${REACT_APP_API_HOSTNAME}/v1/graphql`, {
             headers: {
-                Authorization: `Bearer ${this.authToken}`
-            }
+                Authorization: `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify({
+                query: "{  documents {    name,    contents,    collaborators {      _id,      username    }  } }"
+            })
         })
-            .then(res => res.json());
+            .then(res => res.json())
+            .then(res => res.data.documents)
     }
 
     async loginUser(username, password) {
