@@ -11,9 +11,16 @@ function LoginDialog (props) {
         <p className="loginError">{props.loginError}</p>
     ) : null;
 
+    const showRegisterDialog = () => {
+        props.setActiveDialog("register");
+    }
+
     const contents = (
         <div className="loginForm">
             {loginError}
+            <p>
+                Don't have an account yet? <a onClick={showRegisterDialog} href="#">Create one now</a>
+            </p>
             <p>
                 Log in with one of the following:
             </p>
@@ -22,11 +29,11 @@ function LoginDialog (props) {
                 <li>per/password</li>
                 <li>emil/password</li>
             </ul>
-            <div className="loginFormRow">
+            <div className="formRow">
                 <label htmlFor="username">Username:</label>
                 <input type="text" id="username"/>
             </div>
-            <div className="loginFormRow">
+            <div className="formRow">
                 <label htmlFor="password">Password:</label>
                 <input type="password" id="password"/>
             </div>
@@ -37,8 +44,7 @@ function LoginDialog (props) {
             title="Login"
             name="login"
             submitLabel="Login"
-            dialogs={props.dialogs}
-            setDialogs={props.setDialogs}
+            setActiveDialog={props.setActiveDialog}
             contents={contents}
             onSubmit={props.onSubmit}
         />

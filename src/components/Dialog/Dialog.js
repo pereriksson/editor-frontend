@@ -5,9 +5,7 @@ function Dialog(props) {
     const closeBtn = (props.closeLabel) ?
         (
             <button onClick={() => {
-                const dialogs = Object.assign({}, props.dialogs);
-                dialogs[props.name].visible = false;
-                props.setDialogs(dialogs);
+                props.setActiveDialog(null);
             }}>{props.closeLabel}</button>
         ) : null;
 
@@ -28,10 +26,8 @@ function Dialog(props) {
                                 {closeBtn}
                                 <input type="submit" className="submit" onClick={e => {
                                     e.preventDefault();
-                                    const dialogs = Object.assign({}, props.dialogs);
                                     props.onSubmit();
-                                    dialogs[props.name].visible = false;
-                                    props.setDialogs(dialogs);
+                                    props.setActiveDialog(null);
                                 }} value={props.submitLabel}/>
                             </div>
                         </div>

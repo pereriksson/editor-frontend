@@ -12,21 +12,6 @@
     font-size: .9rem;
 }
 
-.loginFormRow {
-    display: flex;
-    margin-bottom: 1rem;
-}
-
-.loginFormRow label {
-    width: 6rem;
-    padding: .3rem;
-    font-size: .875rem;
-}
-
-.loginFormRow input {
-    width: 15rem;
-}
-
 .loginError {
     color: red;
 }

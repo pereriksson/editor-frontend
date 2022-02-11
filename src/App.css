@@ -7,6 +7,10 @@
   pointer-events: none;
 }
 
+a {
+  color: navy;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -35,4 +39,20 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Forms */
+.formRow {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.formRow label {
+  width: 6rem;
+  padding: .3rem;
+  font-size: .875rem;
+}
+
+.formRow input {
+  width: 15rem;
 }

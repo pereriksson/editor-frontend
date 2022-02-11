@@ -41,8 +41,7 @@ function OpenDialog (props) {
             name="open"
             closeLabel="Close"
             submitLabel="Open"
-            dialogs={props.dialogs}
-            setDialogs={props.setDialogs}
+            setActiveDialog={props.setActiveDialog}
             contents={contents}
             onSubmit={props.onSubmit}
         />

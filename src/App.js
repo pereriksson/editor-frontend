@@ -8,6 +8,7 @@ import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
 import socket from "./Socket";
 import LoginDialog from "./components/LoginDialog/LoginDialog";
 import documentApi from "./apis/DocumentApi";
+import RegisterDialog from "./components/RegisterDialog/RegisterDialog";
 
 function App() {
     const editorRef = useRef(null);
@@ -18,14 +19,7 @@ function App() {
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
-    const [dialogs, setDialogs] = useState({
-        open: {
-            visible: false
-        },
-        login: {
-            visible: true
-        }
-    });
+    const [activeDialog, setActiveDialog] = useState("login");
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -37,9 +31,7 @@ function App() {
     };
 
     const showOpenDialog = async () => {
-        const currentDialogs = Object.assign({}, dialogs);
-        currentDialogs.open.visible = true;
-        setDialogs(currentDialogs);
+        setActiveDialog("open");
     }
 
     const openDocument = () => {
@@ -92,15 +84,35 @@ function App() {
             });
     }
 
-    const openDialog = (dialogs.open.visible) ?
+    const registerUser = async () => {
+
+    }
+
+    const openDialog = (activeDialog === "open") ?
         (
             <OpenDialog
-                dialogs={dialogs}
-                setDialogs={setDialogs}
+                setActiveDialog={setActiveDialog}
                 onSubmit={openDocument}
                 documents={documents}
                 fetchDocuments={fetchDocuments}
                 setDocuments={setDocuments}
+            />
+        ) : null;
+
+    const registerDialog = (activeDialog === "register") ?
+        (
+            <RegisterDialog
+                setActiveDialog={setActiveDialog}
+                onSubmit={registerUser}
+            />
+        ) : null;
+
+    const loginDialog = (activeDialog === "login") ?
+        (
+            <LoginDialog
+                onSubmit={loginUser}
+                setActiveDialog={setActiveDialog}
+                loginError={loginError}
             />
         ) : null;
 
@@ -114,8 +126,6 @@ function App() {
                 <Toolbar
                     currentDocumentId={currentDocumentId}
                     setCurrentDocumentId={setCurrentDocumentId}
-                    dialogs={dialogs}
-                    setDialogs={setDialogs}
                     editorRef={editorRef}
                     newDocument={newDocument}
                     openDocument={showOpenDialog}
@@ -131,12 +141,10 @@ function App() {
                 />
             </div>
         ) : (
-            <LoginDialog
-                onSubmit={loginUser}
-                dialogs={dialogs}
-                setDialogs={setDialogs}
-                loginError={loginError}
-            />
+            <div>
+                {loginDialog}
+                {registerDialog}
+            </div>
         );
 
     return (
