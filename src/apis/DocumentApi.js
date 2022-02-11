@@ -40,7 +40,7 @@ class DocumentApi {
             },
             method: "POST",
             body: JSON.stringify({
-                query: "{  documents {    name,    contents,    collaborators {      _id,      username    }  } }"
+                query: "{ documents { _id, name, contents, collaborators { _id, username } } }"
             })
         })
             .then(res => res.json())
