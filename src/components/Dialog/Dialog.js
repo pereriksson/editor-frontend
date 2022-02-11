@@ -11,6 +11,10 @@ function Dialog(props) {
 
     const dialogClassName = `dialog ${props.name}`;
 
+    const userMessage = (props.userMessage) ? (
+        <div className="userMessage">{props.userMessage}</div>
+    ) : null;
+
     return (
         <div className="dialog-backdrop">
             <div className="dialog-container">
@@ -18,6 +22,7 @@ function Dialog(props) {
                     <form>
                         <h1>{props.title}</h1>
                         <div className="dialog-contents">
+                            {userMessage}
                             {props.contents}
                         </div>
                         <div className="dialog-footer">
@@ -27,7 +32,6 @@ function Dialog(props) {
                                 <input type="submit" className="submit" onClick={e => {
                                     e.preventDefault();
                                     props.onSubmit();
-                                    props.setActiveDialog(null);
                                 }} value={props.submitLabel}/>
                             </div>
                         </div>

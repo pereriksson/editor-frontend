@@ -32,6 +32,7 @@ function RegisterDialog (props) {
             setActiveDialog={props.setActiveDialog}
             contents={contents}
             onSubmit={props.onSubmit}
+            userMessage={props.userMessage}
         />
     );
 }

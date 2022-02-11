@@ -20,6 +20,7 @@ function App() {
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
     const [activeDialog, setActiveDialog] = useState("login");
+    const [userMessage, setUserMessage] = useState(null);
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -40,6 +41,7 @@ function App() {
         const currentDocument = documents.find(d => d._id === docId);
         setCurrentDocumentName(currentDocument.name);
         editorRef.current.setContent(currentDocument.contents);
+        setActiveDialog(null);
 
         socket.openDocument(docId);
 
@@ -59,6 +61,7 @@ function App() {
             await documentApi.createDocument(currentDocumentName, editorRef.current.getContent())
                 .then(doc => setCurrentDocumentId(doc._id));
         }
+        setActiveDialog(null);
     }
 
     const sendUpdateToBackend = () => {
@@ -85,7 +88,15 @@ function App() {
     }
 
     const registerUser = async () => {
-
+        documentApi.registerUser(document.querySelector("#username").value, document.querySelector("#password").value)
+            .then(res => {
+                if (res._id) {
+                    setActiveDialog("login");
+                    setUserMessage(null);
+                } else {
+                    setUserMessage(res.error)
+                }
+            })
     }
 
     const openDialog = (activeDialog === "open") ?
@@ -104,6 +115,7 @@ function App() {
             <RegisterDialog
                 setActiveDialog={setActiveDialog}
                 onSubmit={registerUser}
+                userMessage={userMessage}
             />
         ) : null;
 

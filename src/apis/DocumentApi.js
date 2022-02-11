@@ -59,6 +59,22 @@ class DocumentApi {
 
         return res;
     }
+
+    async registerUser(username, password) {
+        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        })
+            .then(res => res.json());
+
+        return res;
+    }
 }
 
 export default new DocumentApi();
