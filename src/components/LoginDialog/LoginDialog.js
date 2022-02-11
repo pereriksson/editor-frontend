@@ -25,7 +25,6 @@ function LoginDialog (props) {
                 Log in with one of the following:
             </p>
             <ul>
-                <li>admin/admin</li>
                 <li>per/password</li>
                 <li>emil/password</li>
             </ul>
