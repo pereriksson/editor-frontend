@@ -31,6 +31,20 @@ class DocumentApi {
         });
     }
 
+    async inviteUser(email, documentId) {
+        await fetch(`${REACT_APP_API_HOSTNAME}/v1/invite`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.authToken}`
+            },
+            body: JSON.stringify({
+                email,
+                documentId
+            })
+        });
+    }
+
     async fetchDocuments() {
         return await fetch(`${REACT_APP_API_HOSTNAME}/v1/graphql`, {
             headers: {

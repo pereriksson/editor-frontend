@@ -2,8 +2,14 @@
     display: flex;
     height: 3.5rem;
     align-items: center;
+    justify-content: space-between;
 }
 
+.header .left {
+    display: flex;
+    height: 3.5rem;
+    align-items: center;
+}
 
 .logo {
     background: url(logo.png) no-repeat center;
@@ -14,6 +20,23 @@
 
 .document-name input {
     font-size: 1.2rem;
-    border: 1px solid #ccc;
-    padding-left: 4px;
+    border: 1px solid #ddd;
+    padding: 2px 4px;
+}
+
+.header .invite button {
+    color: #ffffff;
+    background: #4086F3;
+    font-weight: bold;
+    border-radius: 0.1875rem;
+    padding: 4px 16px;
+    border: 1px solid #4086F3;
+    line-height: 1.5rem;
+    margin-right: .5rem;
+    cursor: pointer;
+}
+
+.header .invite button:hover {
+    background: #5c98f2;
+    border: 1px solid #5c98f2;
 }

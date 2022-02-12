@@ -9,12 +9,12 @@ import socket from "./Socket";
 import LoginDialog from "./components/LoginDialog/LoginDialog";
 import documentApi from "./apis/DocumentApi";
 import RegisterDialog from "./components/RegisterDialog/RegisterDialog";
+import InviteDialog from "./components/InviteDialog/InviteDialog";
 
 function App() {
     const editorRef = useRef(null);
 
     const [loggedIn, setLoggedIn] = useState(false);
-    const authToken = useRef();
     const [loginError, setLoginError] = useState();
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
@@ -99,6 +99,14 @@ function App() {
             })
     }
 
+    const inviteUser = async () => {
+        await documentApi.inviteUser(
+            document.querySelector("#email").value,
+            currentDocumentId
+        );
+        setActiveDialog(null);
+    }
+
     const openDialog = (activeDialog === "open") ?
         (
             <OpenDialog
@@ -128,12 +136,22 @@ function App() {
             />
         ) : null;
 
+    const inviteDialog = (activeDialog === "invite") ?
+        (
+            <InviteDialog
+                onSubmit={inviteUser}
+                setActiveDialog={setActiveDialog}
+            />
+        ) : null;
+
     const app = loggedIn ?
         (
             <div>
                 <Header
+                    currentDocumentId={currentDocumentId}
                     currentDocumentName={currentDocumentName}
                     setCurrentDocumentName={setCurrentDocumentName}
+                    setActiveDialog={setActiveDialog}
                 />
                 <Toolbar
                     currentDocumentId={currentDocumentId}
@@ -144,6 +162,7 @@ function App() {
                     saveDocument={saveDocument}
                 />
                 {openDialog}
+                {inviteDialog}
                 <ContentEditor
                     editorRef={editorRef}
                     socket={socket}

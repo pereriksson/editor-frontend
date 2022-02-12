@@ -1,9 +1,11 @@
 import React from "react";
 import {Editor} from "@tinymce/tinymce-react";
+import {TINYMCE_API_KEY} from "../../constants";
 
 function ContentEditor(props) {
     return (
         <Editor
+            apiKey={TINYMCE_API_KEY}
             onInit={(evt, editor) => {
                 props.editorRef.current = editor;
             }}
