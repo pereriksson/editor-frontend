@@ -21,11 +21,12 @@ function App() {
     const [documents, setDocuments] = useState();
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
+    const [currentDocumentComments, setCurrentDocumentComments] = useState([]);
+    const currentDocumentContents = useRef("");
     const [activeDialog, setActiveDialog] = useState("login");
     const [userMessage, setUserMessage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState("editor");
-    const [temporarilyStoredContents, setTemporarilyStoredContents] = useState("");
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -45,6 +46,8 @@ function App() {
         setCurrentDocumentId(docId);
         const currentDocument = documents.find(d => d._id === docId);
         setCurrentDocumentName(currentDocument.name);
+        setCurrentDocumentComments(currentDocument.comments);
+        currentDocumentContents.current = currentDocument.contents;
         editorRef.current.setContent(currentDocument.contents);
         setActiveDialog(null);
 
@@ -61,15 +64,16 @@ function App() {
 
     const saveDocument = async () => {
         if (currentDocumentId) {
-            await documentApi.updateDocument(currentDocumentId, currentDocumentName, editorRef.current.getContent());
+            await documentApi.updateDocument(currentDocumentId, currentDocumentName, currentDocumentContents.current, currentDocumentComments);
         } else {
-            await documentApi.createDocument(currentDocumentName, editorRef.current.getContent())
+            await documentApi.createDocument(currentDocumentName, currentDocumentContents.current, currentDocumentComments)
                 .then(doc => setCurrentDocumentId(doc._id));
         }
         setActiveDialog(null);
     }
 
     const sendUpdateToBackend = () => {
+        currentDocumentContents.current = editorRef.current.getContent();
         if (currentDocumentId) {
             socket.update(currentDocumentId, currentDocumentName, editorRef.current.getContent());
         }
@@ -119,7 +123,6 @@ function App() {
 
     const toggleCommentsView = () => {
         if (view === "editor") {
-            setTemporarilyStoredContents(editorRef.current.getContent());
             setView("comments");
         } else {
             setView("editor");
@@ -172,17 +175,19 @@ function App() {
             currentDocumentId={currentDocumentId}
             currentDocumentName={currentDocumentName}
             sendUpdateToBackend={sendUpdateToBackend}
-            contents={temporarilyStoredContents}
+            contents={currentDocumentContents.current}
         />
     ) : (
         <Comments
-            contents={editorRef.current.getContent()}
+            contents={currentDocumentContents.current}
+            currentDocumentComments={currentDocumentComments}
+            setCurrentDocumentComments={setCurrentDocumentComments}
         />
     );
 
     const app = loggedIn ?
         (
-            <div>
+            <div className="wrapper">
                 <Header
                     currentDocumentId={currentDocumentId}
                     currentDocumentName={currentDocumentName}
@@ -200,7 +205,9 @@ function App() {
                     exportDocument={exportDocument}
                     toggleCommentsView={toggleCommentsView}
                 />
-                {currentView}
+                <div className="current-view">
+                    {currentView}
+                </div>
                 {openDialog}
                 {inviteDialog}
             </div>

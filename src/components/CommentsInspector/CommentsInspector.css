@@ -1,0 +1,21 @@
+.inspect {
+    padding-top: 1rem;
+}
+
+.inspect * {
+    display: block;
+}
+
+.inspect p {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.inspect h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inspect textarea {
+    margin-bottom: 1rem;
+}

@@ -1,3 +1,17 @@
+html, body, root, .App {
+  min-height: 100vh;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.current-view {
+  flex-grow: 1;
+}
+
 .App {
 
 }
@@ -64,3 +78,9 @@ a {
 .formRow input {
   width: 15rem;
 }
+
+textarea {
+  font-family: inherit;
+  border: 1px solid #777;
+}
+

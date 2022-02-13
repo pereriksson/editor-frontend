@@ -1,7 +1,7 @@
 import {REACT_APP_API_HOSTNAME} from "../constants";
 
 class DocumentApi {
-    async createDocument(name, contents) {
+    async createDocument(name, contents, comments) {
         return await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents`, {
             method: "POST",
             headers: {
@@ -10,13 +10,14 @@ class DocumentApi {
             },
             body: JSON.stringify({
                 name,
-                contents
+                contents,
+                comments
             })
         })
             .then(res => res.json());
     }
 
-    async updateDocument(_id, name, contents) {
+    async updateDocument(_id, name, contents, comments) {
         await fetch(`${REACT_APP_API_HOSTNAME}/v1/documents/${_id}`, {
             method: "PUT",
             headers: {
@@ -26,7 +27,8 @@ class DocumentApi {
             body: JSON.stringify({
                 _id,
                 name,
-                contents
+                contents,
+                comments
             })
         });
     }
@@ -54,7 +56,7 @@ class DocumentApi {
             },
             method: "POST",
             body: JSON.stringify({
-                query: "{ documents { _id, name, contents, collaborators { _id, username } } }"
+                query: "{ documents { _id, name, contents, comments { node, comment }, collaborators { _id, username } } }"
             })
         })
             .then(res => res.json())

@@ -1,0 +1,31 @@
+.comments-view {
+    display: flex;
+    height: 100%;
+}
+
+.comments-view .document {
+    flex-grow: 1;
+    padding: 1rem;
+}
+
+.comments-view .inspect {
+    width: 18rem;
+}
+
+.comments-view .inspect textarea {
+    width: 13rem;
+    height: 7rem;
+}
+
+.comments-view .document :is(p, h1, h2, h3, h4, h5, h6) {
+    background: #f3f3f3;
+}
+
+.comments-view .document :is(p, h1, h2, h3, h4, h5, h6):hover {
+    background: #fff9cc;
+    cursor: pointer;
+}
+
+.inspect h2 {
+    margin: 0;
+}
