@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@codemirror/lang-javascript": "^0.19.7",
     "@tinymce/tinymce-react": "^3.12.6",
     "@uiw/react-codemirror": "^4.3.3",
     "codemirror": "^5.65.1",
