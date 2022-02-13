@@ -31,6 +31,9 @@ function App() {
     const newDocument = () => {
         setCurrentDocumentId(null);
         setCurrentDocumentName(null);
+        setCurrentDocumentComments([]);
+        setView("editor");
+        currentDocumentContents.current = "";
 
         if (editorRef.current) {
             editorRef.current.setContent("");
@@ -42,6 +45,7 @@ function App() {
     }
 
     const openDocument = () => {
+        setView("editor");
         const docId = document.querySelector("input[name='documentId']:checked").value;
         setCurrentDocumentId(docId);
         const currentDocument = documents.find(d => d._id === docId);
@@ -118,7 +122,7 @@ function App() {
 
     const exportDocument = () => {
         const pdf = new PdfApi();
-        pdf.exportPdf();
+        pdf.exportPdf(currentDocumentContents.current);
     }
 
     const toggleCommentsView = () => {
