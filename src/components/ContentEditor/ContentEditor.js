@@ -12,6 +12,7 @@ function ContentEditor(props) {
             onChange={(event, editor) => {
                 props.sendUpdateToBackend();
             }}
+            initialValue={props.contents}
             init={{
                 height: 500,
                 menubar: false,

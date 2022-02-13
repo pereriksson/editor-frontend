@@ -1,3 +1,7 @@
+.toolbar-button {
+
+}
+
 .toolbar-button button {
     background: transparent;
     border: 0;
@@ -5,7 +9,6 @@
     justify-content: center;
     align-items: center;
     border-radius: 3px;
-    margin: 2px 0 3px 0;
     padding: 3px 2px;
 }
 
@@ -17,8 +20,20 @@
     padding: 0 0 0 4px;
 }
 
+.toolbar-button .icon img {
+    width: 23px;
+    display: block;
+}
+
 .toolbar-button .label {
     padding: 0 4px 0 4px;
     font-size: 0.875rem;
     color: rgb(34, 47, 42);
+}
+
+.toolbar-button.export button span img {
+    width: 21px;
+}
+.toolbar-button.comments button span img {
+    width: 23px;
 }

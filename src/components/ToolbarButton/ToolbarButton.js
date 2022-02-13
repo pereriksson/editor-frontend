@@ -2,8 +2,9 @@ import React from "react";
 import './ToolbarButton.css';
 
 function ToolbarButton(props) {
+    const className = `toolbar-button ${props.name}`;
     return (
-        <div className="toolbar-button">
+        <div className={className}>
             <button
                 onClick={() => {
                     props.onClick();

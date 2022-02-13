@@ -7,9 +7,9 @@ function InviteDialog (props) {
 
     contents = (
         <div>
-            <p>Fill in the form below to invite a friend or colleague.</p>
+            <p>Fill in the form below to collaborate with someone.</p>
             <div className="formRow">
-                <label htmlFor="email">Email address:</label>
+                <label htmlFor="email">Email:</label>
                 <input type="text" id="email"/>
             </div>
         </div>

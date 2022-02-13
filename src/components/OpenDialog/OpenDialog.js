@@ -2,9 +2,11 @@ import React, {useEffect} from "react";
 import Dialog from "../Dialog/Dialog";
 
 function OpenDialog (props) {
-    useEffect(() => {
+    useEffect(async () => {
+        props.setLoading(true);
         props.setDocuments(null);
-        props.fetchDocuments();
+        await props.fetchDocuments();
+        props.setLoading(false);
     }, []);
 
     let contents;
@@ -26,12 +28,16 @@ function OpenDialog (props) {
         });
     }
 
-    contents = (
+    contents = !props.loading ? (
         <div>
             <p>Select the document to open:</p>
             <ul>
                 {listItems}
             </ul>
+        </div>
+    ) : (
+        <div>
+            <p className="loading">Loading...</p>
         </div>
     );
 

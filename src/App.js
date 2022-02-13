@@ -4,12 +4,14 @@ import Toolbar from "./components/Toolbar/Toolbar";
 import OpenDialog from "./components/OpenDialog/OpenDialog";
 import Header from "./components/Header/Header";
 import ContentEditor from "./components/ContentEditor/ContentEditor";
-import {REACT_APP_API_HOSTNAME, APP_INSTANCE_ID} from "./constants";
+import {APP_INSTANCE_ID} from "./constants";
 import socket from "./Socket";
 import LoginDialog from "./components/LoginDialog/LoginDialog";
 import documentApi from "./apis/DocumentApi";
+import PdfApi from "./apis/PdfApi";
 import RegisterDialog from "./components/RegisterDialog/RegisterDialog";
 import InviteDialog from "./components/InviteDialog/InviteDialog";
+import Comments from "./components/Comments/Comments";
 
 function App() {
     const editorRef = useRef(null);
@@ -21,6 +23,9 @@ function App() {
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
     const [activeDialog, setActiveDialog] = useState("login");
     const [userMessage, setUserMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [view, setView] = useState("editor");
+    const [temporarilyStoredContents, setTemporarilyStoredContents] = useState("");
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -107,6 +112,20 @@ function App() {
         setActiveDialog(null);
     }
 
+    const exportDocument = () => {
+        const pdf = new PdfApi();
+        pdf.exportPdf();
+    }
+
+    const toggleCommentsView = () => {
+        if (view === "editor") {
+            setTemporarilyStoredContents(editorRef.current.getContent());
+            setView("comments");
+        } else {
+            setView("editor");
+        }
+    }
+
     const openDialog = (activeDialog === "open") ?
         (
             <OpenDialog
@@ -115,6 +134,8 @@ function App() {
                 documents={documents}
                 fetchDocuments={fetchDocuments}
                 setDocuments={setDocuments}
+                loading={loading}
+                setLoading={setLoading}
             />
         ) : null;
 
@@ -144,6 +165,21 @@ function App() {
             />
         ) : null;
 
+    const currentView = (view === "editor") ? (
+        <ContentEditor
+            editorRef={editorRef}
+            socket={socket}
+            currentDocumentId={currentDocumentId}
+            currentDocumentName={currentDocumentName}
+            sendUpdateToBackend={sendUpdateToBackend}
+            contents={temporarilyStoredContents}
+        />
+    ) : (
+        <Comments
+            contents={editorRef.current.getContent()}
+        />
+    );
+
     const app = loggedIn ?
         (
             <div>
@@ -157,19 +193,16 @@ function App() {
                     currentDocumentId={currentDocumentId}
                     setCurrentDocumentId={setCurrentDocumentId}
                     editorRef={editorRef}
+                    view={view}
                     newDocument={newDocument}
                     openDocument={showOpenDialog}
                     saveDocument={saveDocument}
+                    exportDocument={exportDocument}
+                    toggleCommentsView={toggleCommentsView}
                 />
+                {currentView}
                 {openDialog}
                 {inviteDialog}
-                <ContentEditor
-                    editorRef={editorRef}
-                    socket={socket}
-                    currentDocumentId={currentDocumentId}
-                    currentDocumentName={currentDocumentName}
-                    sendUpdateToBackend={sendUpdateToBackend}
-                />
             </div>
         ) : (
             <div>
