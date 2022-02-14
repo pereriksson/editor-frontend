@@ -1,0 +1,22 @@
+.cm-theme-light,
+.cm-editor {
+    height: 100%;
+}
+
+.code-view {
+    display: flex;
+    height: 100%;
+}
+
+.code-view .cm-theme-light,
+.code-view .result {
+    flex-basis: 50%;
+}
+
+.code-view .result {
+    padding: 1rem;
+}
+
+.code-view h2 {
+    margin: 0;
+}

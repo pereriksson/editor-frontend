@@ -12,6 +12,8 @@ import PdfApi from "./apis/PdfApi";
 import RegisterDialog from "./components/RegisterDialog/RegisterDialog";
 import InviteDialog from "./components/InviteDialog/InviteDialog";
 import Comments from "./components/Comments/Comments";
+import CodeEditor from "./components/CodeEditor/CodeEditor";
+import Execjs from "./apis/Execjs";
 
 function App() {
     const editorRef = useRef(null);
@@ -27,6 +29,8 @@ function App() {
     const [userMessage, setUserMessage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState("editor");
+    const [code, setCode] = useState("console.log('hello world!');");
+    const [codeResult, setCodeResult] = useState();
 
     const newDocument = () => {
         setCurrentDocumentId(null);
@@ -133,6 +137,19 @@ function App() {
         }
     }
 
+    const toggleCodeView = () => {
+        if (["editor", "comments"].includes(view)) {
+            setView("code");
+        } else {
+            setView("editor");
+        }
+    }
+
+    const runCode = async () => {
+        let execjs = new Execjs();
+        setCodeResult(await execjs.run(code));
+    }
+
     const openDialog = (activeDialog === "open") ?
         (
             <OpenDialog
@@ -172,22 +189,39 @@ function App() {
             />
         ) : null;
 
-    const currentView = (view === "editor") ? (
-        <ContentEditor
-            editorRef={editorRef}
-            socket={socket}
-            currentDocumentId={currentDocumentId}
-            currentDocumentName={currentDocumentName}
-            sendUpdateToBackend={sendUpdateToBackend}
-            contents={currentDocumentContents.current}
-        />
-    ) : (
-        <Comments
-            contents={currentDocumentContents.current}
-            currentDocumentComments={currentDocumentComments}
-            setCurrentDocumentComments={setCurrentDocumentComments}
-        />
-    );
+    let currentView;
+    switch (view) {
+        case 'editor':
+            currentView = (
+                <ContentEditor
+                    editorRef={editorRef}
+                    socket={socket}
+                    currentDocumentId={currentDocumentId}
+                    currentDocumentName={currentDocumentName}
+                    sendUpdateToBackend={sendUpdateToBackend}
+                    contents={currentDocumentContents.current}
+                />
+            );
+            break;
+        case 'comments':
+            currentView = (
+                <Comments
+                    contents={currentDocumentContents.current}
+                    currentDocumentComments={currentDocumentComments}
+                    setCurrentDocumentComments={setCurrentDocumentComments}
+                />
+            );
+            break;
+        case 'code':
+            currentView = (
+                <CodeEditor
+                    setCode={setCode}
+                    codeResult={codeResult}
+                    code={code}
+                />
+            );
+            break;
+    }
 
     const app = loggedIn ?
         (
@@ -208,6 +242,8 @@ function App() {
                     saveDocument={saveDocument}
                     exportDocument={exportDocument}
                     toggleCommentsView={toggleCommentsView}
+                    toggleCodeView={toggleCodeView}
+                    runCode={runCode}
                 />
                 <div className="current-view">
                     {currentView}

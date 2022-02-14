@@ -7,10 +7,67 @@ import openIcon from './open.svg';
 import saveIcon from './save.svg';
 import exportIcon from './export.png';
 import commentIcon from './comment.svg';
+import codeIcon from './code.svg';
+import terminalIcon from './terminal.svg';
+import documentIcon from './document.svg';
 
 function Toolbar(props) {
     const commentsLabel = (props.view === "editor") ?
         "Show comments" : "Hide comments";
+    let comments = ["editor", "comments"].includes(props.view) ? (
+        <ToolbarButtonGroup>
+            <ToolbarButton
+                icon={commentIcon}
+                label={commentsLabel}
+                name="comments"
+                onClick={props.toggleCommentsView}
+            />
+        </ToolbarButtonGroup>
+    ) : null;
+
+    if (props.view === "code") {
+        // TODO: show document button
+    }
+
+    const code = ["editor", "comments"].includes(props.view) ? (
+        <ToolbarButtonGroup>
+            <ToolbarButton
+                icon={codeIcon}
+                label="Switch to code view"
+                name="code"
+                onClick={props.toggleCodeView}
+            />
+        </ToolbarButtonGroup>
+    ) : (
+        <ToolbarButtonGroup>
+            <ToolbarButton
+                icon={documentIcon}
+                label="Switch to document view"
+                name="editor"
+                onClick={props.toggleCodeView}
+            />
+        </ToolbarButtonGroup>
+    );
+
+    const runCode = props.view === "code" ? (
+        <ToolbarButtonGroup>
+            <ToolbarButton
+                icon={terminalIcon}
+                label="Run"
+                name="runCode"
+                onClick={props.runCode}
+            />
+        </ToolbarButtonGroup>
+    ) : null;
+
+    const exportToPdf = ["editor", "comments"].includes(props.view) ? (
+        <ToolbarButton
+            icon={exportIcon}
+            label="Export to PDF"
+            name="export"
+            onClick={props.exportDocument}
+        />
+    ) : null;
 
     return (
         <div className="toolbar">
@@ -33,21 +90,11 @@ function Toolbar(props) {
                     name="save"
                     onClick={props.saveDocument}
                 />
-                <ToolbarButton
-                    icon={exportIcon}
-                    label="Export to PDF"
-                    name="export"
-                    onClick={props.exportDocument}
-                />
+                {exportToPdf}
             </ToolbarButtonGroup>
-            <ToolbarButtonGroup>
-                <ToolbarButton
-                    icon={commentIcon}
-                    label={commentsLabel}
-                    name="comments"
-                    onClick={props.toggleCommentsView}
-                />
-            </ToolbarButtonGroup>
+            {comments}
+            {code}
+            {runCode}
         </div>
     );
 }
