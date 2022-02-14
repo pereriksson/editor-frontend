@@ -61,12 +61,14 @@ function Toolbar(props) {
     ) : null;
 
     const exportToPdf = ["editor", "comments"].includes(props.view) ? (
-        <ToolbarButton
-            icon={exportIcon}
-            label="Export to PDF"
-            name="export"
-            onClick={props.exportDocument}
-        />
+        <ToolbarButtonGroup>
+            <ToolbarButton
+                icon={exportIcon}
+                label="Export to PDF"
+                name="export"
+                onClick={props.exportDocument}
+            />
+        </ToolbarButtonGroup>
     ) : null;
 
     return (
@@ -90,8 +92,9 @@ function Toolbar(props) {
                     name="save"
                     onClick={props.saveDocument}
                 />
-                {exportToPdf}
+
             </ToolbarButtonGroup>
+            {exportToPdf}
             {comments}
             {code}
             {runCode}

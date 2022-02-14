@@ -140,6 +140,8 @@ function App() {
     const toggleCodeView = () => {
         if (["editor", "comments"].includes(view)) {
             setView("code");
+            setCurrentDocumentComments([]);
+            currentDocumentContents.current = "";
         } else {
             setView("editor");
         }
