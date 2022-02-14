@@ -284,7 +284,7 @@ function App() {
 
     return (
         <div className="App">
-            <HashRouter basename={REACT_APP_ROUTER_BASENAME}>
+            <HashRouter>
                 <Routes>
                     <Route path="/invite/:id" element={<AcceptInvitationDialog
                         onSubmit={acceptInvitation}
