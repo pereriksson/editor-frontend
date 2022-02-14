@@ -9,7 +9,7 @@ export default function CodeEditor(props) {
                 value={props.currentDocumentCode}
                 extensions={[javascript({ jsx: true })]}
                 onChange={(value, viewUpdate) => {
-                    props.setCode(value);
+                    props.setCurrentDocumentCode(value);
                 }}
             />
             <div className="result">
