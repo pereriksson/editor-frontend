@@ -14,6 +14,8 @@ import InviteDialog from "./components/InviteDialog/InviteDialog";
 import Comments from "./components/Comments/Comments";
 import CodeEditor from "./components/CodeEditor/CodeEditor";
 import Execjs from "./apis/Execjs";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import AcceptInvitationDialog from "./components/AcceptInvitationDialog/AcceptInvitationDialog";
 
 function App() {
     const editorRef = useRef(null);
@@ -152,6 +154,13 @@ function App() {
         setCodeResult(await execjs.run(code));
     }
 
+    const acceptInvitation = async (id, username, password, firstName, lastName) => {
+        return await documentApi.acceptInvitation(id, username, password, firstName, lastName)
+            .then(res => {
+
+            })
+    }
+
     const openDialog = (activeDialog === "open") ?
         (
             <OpenDialog
@@ -262,7 +271,14 @@ function App() {
 
     return (
         <div className="App">
-            {app}
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/invite/:id" element={<AcceptInvitationDialog
+                        onSubmit={acceptInvitation}
+                    />}/>
+                    <Route path="/" element={app}/>
+                </Routes>
+            </BrowserRouter>
         </div>
     );
 }

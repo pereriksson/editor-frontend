@@ -15,8 +15,10 @@
 
 .code-view .result {
     padding: 1rem;
+    border-left: 1px solid #ccc;
 }
 
 .code-view h2 {
     margin: 0;
+    font-size: 1rem;
 }

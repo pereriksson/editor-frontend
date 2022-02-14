@@ -98,6 +98,24 @@ class DocumentApi {
 
         return res;
     }
+
+    async acceptInvitation(id, username, password, firstName, lastName) {
+        const res = await fetch(`${REACT_APP_API_HOSTNAME}/v1/acceptInvitation`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id,
+                username,
+                password,
+                firstName,
+                lastName
+            })
+        });
+
+        return res;
+    }
 }
 
 export default new DocumentApi();
