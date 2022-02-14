@@ -27,18 +27,20 @@ function App() {
     const [currentDocumentId, setCurrentDocumentId] = useState(null);
     const [currentDocumentName, setCurrentDocumentName] = useState(null);
     const [currentDocumentComments, setCurrentDocumentComments] = useState([]);
+    const [currentDocumentType, setCurrentDocumentType] = useState("text");
     const currentDocumentContents = useRef("");
     const [activeDialog, setActiveDialog] = useState("login");
     const [userMessage, setUserMessage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState("editor");
-    const [code, setCode] = useState("console.log('hello world!');");
+    const [currentDocumentCode, setCurrentDocumentCode] = useState("console.log('hello world!');");
     const [codeResult, setCodeResult] = useState();
 
     const newDocument = () => {
         setCurrentDocumentId(null);
         setCurrentDocumentName(null);
         setCurrentDocumentComments([]);
+        setCurrentDocumentType("text");
         setView("editor");
         currentDocumentContents.current = "";
 
@@ -52,12 +54,20 @@ function App() {
     }
 
     const openDocument = () => {
-        setView("editor");
         const docId = document.querySelector("input[name='documentId']:checked").value;
         setCurrentDocumentId(docId);
         const currentDocument = documents.find(d => d._id === docId);
         setCurrentDocumentName(currentDocument.name);
         setCurrentDocumentComments(currentDocument.comments);
+        setCurrentDocumentType(currentDocument.type);
+        switch (currentDocument.type) {
+            case "text":
+                setView("editor");
+                break;
+            case "code":
+                setView("code");
+                break;
+        }
         currentDocumentContents.current = currentDocument.contents;
         editorRef.current.setContent(currentDocument.contents);
         setActiveDialog(null);
@@ -74,10 +84,11 @@ function App() {
     };
 
     const saveDocument = async () => {
+        const contents = currentDocumentType === "text" ? currentDocumentContents.current : currentDocumentCode;
         if (currentDocumentId) {
-            await documentApi.updateDocument(currentDocumentId, currentDocumentName, currentDocumentContents.current, currentDocumentComments);
+            await documentApi.updateDocument(currentDocumentId, currentDocumentName, contents, currentDocumentComments, currentDocumentType);
         } else {
-            await documentApi.createDocument(currentDocumentName, currentDocumentContents.current, currentDocumentComments)
+            await documentApi.createDocument(currentDocumentName, contents, currentDocumentComments, currentDocumentType)
                 .then(doc => setCurrentDocumentId(doc._id));
         }
         setActiveDialog(null);
@@ -143,16 +154,18 @@ function App() {
     const toggleCodeView = () => {
         if (["editor", "comments"].includes(view)) {
             setView("code");
+            setCurrentDocumentType("code");
             setCurrentDocumentComments([]);
             currentDocumentContents.current = "";
         } else {
             setView("editor");
+            setCurrentDocumentType("text");
         }
     }
 
     const runCode = async () => {
         let execjs = new Execjs();
-        setCodeResult(await execjs.run(code));
+        setCodeResult(await execjs.run(currentDocumentCode));
     }
 
     const acceptInvitation = async (id, username, password, firstName, lastName) => {
@@ -224,9 +237,9 @@ function App() {
         case 'code':
             currentView = (
                 <CodeEditor
-                    setCode={setCode}
+                    setCurrentDocumentCode={setCurrentDocumentCode}
                     codeResult={codeResult}
-                    code={code}
+                    currentDocumentCode={currentDocumentCode}
                 />
             );
             break;
