@@ -61,6 +61,7 @@ function App() {
         setCurrentDocumentComments(currentDocument.comments);
         setCurrentDocumentType(currentDocument.type);
         switch (currentDocument.type) {
+            default:
             case "text":
                 setView("editor");
                 break;
@@ -213,6 +214,7 @@ function App() {
 
     let currentView;
     switch (view) {
+        default:
         case 'editor':
             currentView = (
                 <ContentEditor

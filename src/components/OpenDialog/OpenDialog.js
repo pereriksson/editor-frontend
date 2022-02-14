@@ -2,12 +2,15 @@ import React, {useEffect} from "react";
 import Dialog from "../Dialog/Dialog";
 
 function OpenDialog (props) {
-    useEffect(async () => {
-        props.setLoading(true);
-        props.setDocuments(null);
-        await props.fetchDocuments();
-        props.setLoading(false);
-    }, []);
+    useEffect(() => {
+        async function fetchData() {
+            props.setLoading(true);
+            props.setDocuments(null);
+            await props.fetchDocuments();
+            props.setLoading(false);
+        }
+        fetchData();
+    });
 
     let contents;
     let listItems;

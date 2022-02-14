@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Dialog from "../Dialog/Dialog";
 import "./RegisterDialog.css";
 
@@ -11,7 +11,7 @@ function RegisterDialog (props) {
 
     contents = (
         <div>
-            <p>Already have an account? <a onClick={showLoginDialog} href="#">Click here to login</a></p>
+            <p>Already have an account? <button type="button" className="link" onClick={showLoginDialog}>Click here to login</button></p>
             <p>Please fill in the following:</p>
             <div className="formRow">
                 <label htmlFor="username">Username:</label>

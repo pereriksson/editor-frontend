@@ -1,4 +1,4 @@
-import react, {createRef, useState} from 'react';
+import {createRef, useState} from 'react';
 import './CommentsInspector.css';
 
 const CommentsInspector = props => {

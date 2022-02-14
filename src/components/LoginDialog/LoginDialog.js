@@ -19,7 +19,7 @@ function LoginDialog (props) {
         <div className="loginForm">
             {loginError}
             <p>
-                Don't have an account yet? <a onClick={showRegisterDialog} href="#">Create one now</a>
+                Don't have an account yet? <button type="button" className="link" onClick={showRegisterDialog}>Create one now</button>
             </p>
             <p>
                 Log in with one of the following:
