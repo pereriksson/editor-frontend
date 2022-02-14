@@ -16,6 +16,7 @@ import CodeEditor from "./components/CodeEditor/CodeEditor";
 import Execjs from "./apis/Execjs";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import AcceptInvitationDialog from "./components/AcceptInvitationDialog/AcceptInvitationDialog";
+import {REACT_APP_ROUTER_BASENAME} from "./constants.js";
 
 function App() {
     const editorRef = useRef(null);
@@ -155,10 +156,7 @@ function App() {
     }
 
     const acceptInvitation = async (id, username, password, firstName, lastName) => {
-        return await documentApi.acceptInvitation(id, username, password, firstName, lastName)
-            .then(res => {
-
-            })
+        return await documentApi.acceptInvitation(id, username, password, firstName, lastName);
     }
 
     const openDialog = (activeDialog === "open") ?
@@ -271,7 +269,7 @@ function App() {
 
     return (
         <div className="App">
-            <BrowserRouter>
+            <BrowserRouter basename={REACT_APP_ROUTER_BASENAME}>
                 <Routes>
                     <Route path="/invite/:id" element={<AcceptInvitationDialog
                         onSubmit={acceptInvitation}
