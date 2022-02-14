@@ -14,7 +14,7 @@ import InviteDialog from "./components/InviteDialog/InviteDialog";
 import Comments from "./components/Comments/Comments";
 import CodeEditor from "./components/CodeEditor/CodeEditor";
 import Execjs from "./apis/Execjs";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {HashRouter, Route, Routes} from "react-router-dom";
 import AcceptInvitationDialog from "./components/AcceptInvitationDialog/AcceptInvitationDialog";
 import {REACT_APP_ROUTER_BASENAME} from "./constants.js";
 
@@ -282,14 +282,14 @@ function App() {
 
     return (
         <div className="App">
-            <BrowserRouter basename={REACT_APP_ROUTER_BASENAME}>
+            <HashRouter basename={REACT_APP_ROUTER_BASENAME}>
                 <Routes>
                     <Route path="/invite/:id" element={<AcceptInvitationDialog
                         onSubmit={acceptInvitation}
                     />}/>
                     <Route path="/" element={app}/>
                 </Routes>
-            </BrowserRouter>
+            </HashRouter>
         </div>
     );
 }
