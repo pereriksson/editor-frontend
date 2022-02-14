@@ -16,7 +16,6 @@ import CodeEditor from "./components/CodeEditor/CodeEditor";
 import Execjs from "./apis/Execjs";
 import {HashRouter, Route, Routes} from "react-router-dom";
 import AcceptInvitationDialog from "./components/AcceptInvitationDialog/AcceptInvitationDialog";
-import {REACT_APP_ROUTER_BASENAME} from "./constants.js";
 
 function App() {
     const editorRef = useRef(null);

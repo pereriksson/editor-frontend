@@ -4,7 +4,7 @@ import './Dialog.css';
 function Dialog(props) {
     const closeBtn = (props.closeLabel) ?
         (
-            <button onClick={() => {
+            <button type="button" onClick={() => {
                 props.setActiveDialog(null);
             }}>{props.closeLabel}</button>
         ) : null;

@@ -10,7 +10,7 @@ function OpenDialog (props) {
             props.setLoading(false);
         }
         fetchData();
-    });
+    }, []);
 
     let contents;
     let listItems;
